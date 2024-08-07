@@ -4,13 +4,23 @@ from game import Game
 from typing import Optional
 
 
+class Score(int):
+    def increment(self):
+        if self == 0:
+            return self
+        elif self < 0:
+            return Score(self - 1)
+        else:
+            return Score(self + 1)
+
+
 def get_scores() -> dict[int, Optional[str]]:
     """Returns a dict mapping the game state integer representation
     obtained from `Game.encode()` into the player that would win if
     that stage is reached (or None if it would result in a tie)."""
 
     # build the graph of game states and possible transitions
-    IG = defaultdict(set)
+    IG: graph.Graph = defaultdict(set)
     for parent, child, _, _, _ in graph.bfs():
         IG[child].add(parent)
         IG[parent]  # create empty node
@@ -21,12 +31,12 @@ def get_scores() -> dict[int, Optional[str]]:
     unvisited = deque()
 
     # set initial scores
-    scores = {}
+    scores: dict[int, Score] = {}
     for node in leaf_nodes:
         game = Game.decode(node)
         winner = game.winner()
         assert winner
-        scores[node] = 3 if winner == 'x' else 1
+        scores[node] = Score(1) if winner == 'x' else Score(-1)
 
         for parent in IG[node]:
             unvisited.append(parent)
@@ -46,8 +56,8 @@ def get_scores() -> dict[int, Optional[str]]:
                 continue
 
             resolved_children += 1
-            if (is_max and scores[child] == 3) or (not is_max and scores[child] == 1):
-                scores[node] = scores[child]
+            if (is_max and scores[child] > 0) or (not is_max and scores[child] < 0):
+                scores[node] = scores[child].increment()
                 forced_wins.add(node)
                 for parent in IG[node]:
                     unvisited.append(parent)
@@ -56,22 +66,22 @@ def get_scores() -> dict[int, Optional[str]]:
             assert resolved_children <= len(G[node])
             if resolved_children == len(G[node]) and len(G[node]) > 0:
                 f = max if is_max else min
-                scores[node] = f(scores[child] for child in G[node])
+                scores[node] = f(scores[child] for child in G[node]).increment()
                 forced_wins.add(node)
                 for parent in IG[node]:
                     unvisited.append(parent)
 
     _minimax(cache=scores, game=Game(), is_max=True, visit_count=defaultdict(int), G=G, visited=set(), forced_wins=forced_wins)
     assert len(G) == len(scores)
-    return scores
+    return {node: (1/score if score else 0) for node, score in scores.items()}
 
 
 def _minimax(
-        cache: dict[int, int],
+        cache: dict[int, Score],
         game: Game,
         is_max: bool,
         visit_count: dict[int, int],
-        G: dict[int, set],
+        G: graph.Graph,
         visited: set[int],
         forced_wins: set[int],
     ) -> None:
@@ -96,7 +106,7 @@ def _minimax(
             else:
                 # calculate this node's state based on the child scores
                 f = max if is_max else min
-                score = f(child_scores)
+                score = f(child_scores).increment()
                 cache[code] = score
 
             visit_count[code] -= 1
@@ -117,7 +127,7 @@ def _minimax(
             if visit_count[child_code] > 0 and visit_count[child_code] == len(G[child_code]):
                 # no new path to take, so we consider this state a tie because we can
                 # cycle forever
-                child_scores.append(2)
+                child_scores.append(Score(0))
                 continue
 
             assert visit_count[child_code] == 0 or visit_count[child_code] < len(G[child_code])

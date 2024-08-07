@@ -1,3 +1,19 @@
+"""
+This script generates a JSON file that has a map from game states
+to the corresponding outcome score:
+ * a positive outcome means that X will win
+ * a negative outcome means that O will win
+ * 0 means that the path leads to a tie (infinite loop)
+
+The higher the absolute score value, the fastest the corresponding
+player will win (the scores are the reciprocate of the number of
+steps needed to win).
+
+This script can optionally run the game against the AI to test it.
+"""
+
+import argparse
+import json
 import random
 import minimax
 from game import Game
@@ -48,4 +64,16 @@ def pick_best_play(game: Game, options: list[int, int]) -> int:
 
 
 if __name__ == '__main__':
-    run_game()
+    parser = argparse.ArgumentParser(usage=__doc__)
+    parser.add_argument('--play', action='store_true', help='Run the game')
+    parser.add_argument('--scores-file', default='scores.json', help='output file name')
+
+    args = parser.parse_args()
+    if args.play:
+        run_game()
+    else:
+        print('generating score table in', args.scores_file)
+        scores = minimax.get_scores()
+
+        with open(args.scores_file, 'w') as fp:
+            json.dump(scores, fp, indent=2, sort_keys=True)
