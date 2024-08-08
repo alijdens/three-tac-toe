@@ -11,6 +11,9 @@ type Settings = {
 
     // 0 for purely random AI or 1 for optimal player
     aiIntelligence: number
+    
+    // seconds that the AI will wait to place its move
+    aiResponseDelay: number
 
     // whether to show the best play hints
     showHints: boolean
@@ -26,6 +29,7 @@ export const DEFAULT_SETTINGS: Settings = {
     aiIntelligence: 100,
     showHints: false,
     highlightMoveToDelete: true,
+    aiResponseDelay: 2,
 }
 
 
@@ -39,7 +43,7 @@ export function SettingsMenu({ values, setValues }: SettingsMenuProps) {
         setValues({ ...values, aiRandomize: event.target.checked })
     }
     function aiIntelligenceHandleChange(event: Event, newValue: number | number[]) {
-        setValues({ ...values, aiIntelligence: (newValue as number) / 100 })
+        setValues({ ...values, aiIntelligence: (newValue as number) })
     }
     function aiPlayerHandleChange(event: SelectChangeEvent) {
         let newPlayer: Player | null = event.target.value as Player
@@ -54,12 +58,14 @@ export function SettingsMenu({ values, setValues }: SettingsMenuProps) {
     function highlightMoveToDeleteHandleChange(event: React.ChangeEvent<HTMLInputElement>) {
         setValues({ ...values, highlightMoveToDelete: event.target.checked })
     }
+    function aiResponseDelayHandleChange(event: Event, newValue: number | number[]) {
+        setValues({ ...values, aiResponseDelay: (newValue as number) })
+    }
 
     return <>
         <FormGroup>
-            <FormControlLabel control={
+        <FormControlLabel control={
                 <Slider
-                    aria-label="AI intelligence"
                     value={values.aiIntelligence}
                     onChange={aiIntelligenceHandleChange}
                     min={0}
@@ -67,6 +73,16 @@ export function SettingsMenu({ values, setValues }: SettingsMenuProps) {
                     valueLabelDisplay="auto"
                 />
             } label="Ai intelligence" />
+
+            <FormControlLabel control={
+                <Slider
+                    value={values.aiResponseDelay}
+                    onChange={aiResponseDelayHandleChange}
+                    min={0}
+                    max={10}
+                    valueLabelDisplay="auto"
+                />
+            } label="Ai response delay" />
 
             <FormControlLabel control={
                 <Switch

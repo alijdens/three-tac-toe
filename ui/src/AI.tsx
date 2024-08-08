@@ -1,4 +1,4 @@
-import { GameState, gameStateReducer, isOccupied, SquarePos } from './state';
+import { GameState, gameStateReducer, isOccupied, Player, SquarePos } from './state';
 import { encodeBoard } from './utils'
 import scores from './assets/scores.json'
 
@@ -63,6 +63,14 @@ function findBest(xNext: boolean, moves: MoveScore[]): MoveScore {
 
 function isBestOrEqual(xNext: boolean, move: MoveScore, other: MoveScore): boolean {
     if ((xNext && move.score >= other.score) || (!xNext && move.score <= other.score)) {
+        return true
+    }
+    return false
+}
+
+export function isAiTurn(state: GameState, aiPlayer: Player | null) {
+    if ((state.xNext && aiPlayer == Player.X) ||
+        (!state.xNext && aiPlayer == Player.O)) {
         return true
     }
     return false
