@@ -22,7 +22,7 @@ export function rankNextMoves(state: GameState): MoveScore[] {
         const childStateCode = encodeBoard(childState).toString()
         return {
             position: i as SquarePos,
-            score: scores[childStateCode] as number,
+            score: (scores as any)[childStateCode] as number,
         }
     })
 
@@ -34,7 +34,6 @@ export function selectMove(
     xNext: boolean,
     moves: MoveScore[],
     random: boolean,
-    aiIntelligence: number,
 ) {
     const bestMove = findBest(xNext, moves)
     if (!random) {

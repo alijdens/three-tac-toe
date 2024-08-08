@@ -27,7 +27,7 @@ function Game() {
         // wait the defined time before executing the action
         const id = setTimeout(() => {
             const nextMoves = rankNextMoves(state)
-            const aiMove = selectMove(state.xNext, nextMoves, settings.aiRandomize, settings.aiIntelligence)
+            const aiMove = selectMove(state.xNext, nextMoves, settings.aiRandomize)
 
             updateState({ type: 'set_play', position: aiMove.position })
         }, settings.aiResponseDelay * 1000)

@@ -1,4 +1,3 @@
-import { getGradient } from "./gradient"
 import { GameState, SquarePos, winner } from "./state"
 
 /**

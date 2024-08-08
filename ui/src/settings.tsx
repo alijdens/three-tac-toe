@@ -42,7 +42,7 @@ export function SettingsMenu({ values, setValues }: SettingsMenuProps) {
     function aiRandomizeHandleChange(event: React.ChangeEvent<HTMLInputElement>) {
         setValues({ ...values, aiRandomize: event.target.checked })
     }
-    function aiIntelligenceHandleChange(event: Event, newValue: number | number[]) {
+    function aiIntelligenceHandleChange(_: Event, newValue: number | number[]) {
         setValues({ ...values, aiIntelligence: (newValue as number) })
     }
     function aiPlayerHandleChange(event: SelectChangeEvent) {
@@ -58,7 +58,7 @@ export function SettingsMenu({ values, setValues }: SettingsMenuProps) {
     function highlightMoveToDeleteHandleChange(event: React.ChangeEvent<HTMLInputElement>) {
         setValues({ ...values, highlightMoveToDelete: event.target.checked })
     }
-    function aiResponseDelayHandleChange(event: Event, newValue: number | number[]) {
+    function aiResponseDelayHandleChange(_: Event, newValue: number | number[]) {
         setValues({ ...values, aiResponseDelay: (newValue as number) })
     }
 
