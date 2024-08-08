@@ -85,12 +85,15 @@ function Square({ id, value, onClick, color, backgroundColor, highlight } : Squa
     if (!value) {
         classes.push('empty')
     }
-    const style = {
+    const style: any = {
         color: color,
         backgroundColor: highlight ? '#030303' : '#1a1a1a',
-        borderColor: highlight ? '#ffffff' : '#000000',
         boxShadow: `inset ${backgroundColor} 0 0 20px 5px`,
         transition: 'transform ease 0.5s, box-shadow ease 0.5s',
+    }
+    if (highlight) {
+        style.borderColor = '#ffffff'
+        style.borderWidth = 3
     }
     return <>
         <button
