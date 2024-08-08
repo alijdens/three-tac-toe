@@ -1,0 +1,65 @@
+name: Deploy static site
+
+on:
+  push:
+    branches:
+      - main
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  compile-ui:
+    uses: ./.github/workflows/compile-ui.yml
+    with:
+      artifact-name: ui
+
+  Build:
+    runs-on: ubuntu-22.04
+    needs: compile-ui
+    strategy:
+      max-parallel: 5
+
+    steps:
+    # collect the compiled UI from the previous job and insert it into the package
+    - name: Download compiled UI
+      uses: actions/download-artifact@v3
+      with:
+        name: ${{ needs.compile-ui.outputs.artifact-name }}
+        path: ./three-tac-toe  # copy to the package's ui folder
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: page
+        path: ./three-tac-toe
+        if-no-files-found: error
+    
+  Deploy:
+    runs-on: ubuntu-22.04
+    needs: Build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+    - name: Collect artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: page
+        path: ./three-tac-toe
+
+    - name: Setup pages
+      uses: actions/configure-pages@v1
+
+    - name: Upload artifacts to pages
+      uses: actions/upload-pages-artifact@v1
+      with:
+        path: ./three-tac-toe
+
+    - name: Deploy to pages
+      id: deployment
+      uses: actions/deploy-pages@v2

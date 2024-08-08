@@ -1,0 +1,48 @@
+# this is a reusable workflow to build the compiled spark-board React UI
+# it's not intended to run as a standalone workflow, but rather to be
+# called ("used") from other workflows
+
+on:
+  workflow_call:
+    inputs:
+      # the `artifact-name` defines the reference name for the generated
+      # artifacts (compiled UI static files) so other jobs can download them.secrets:
+      # the value can be used like ${{ needs.<name>.outputs.artifact-name }}
+      artifact-name:
+          required: true
+          type: string
+
+    outputs:
+      artifact-name:
+        description: |
+          Same input value `artifact-name` that can be used in other jobs.
+          This is a workaround to Github actions not being able to define constants, so
+          in this way the same input can be used in other parts of the workflow.
+        value: ${{ inputs.artifact-name }}
+
+jobs:
+  # this job will compile the UI and upload it as an artifact
+  # we need node js to do it, so we create a separate job for it
+  compile-ui:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.16.0
+      - name: Build UI
+        run: |
+          cd ui
+          npm install
+          npm run build
+          mv dist ../dist-ui
+
+      # this stage will upload the compiled UI so the next ones can use it
+      - name: Upload ui
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: ./dist-ui
+          if-no-files-found: error
