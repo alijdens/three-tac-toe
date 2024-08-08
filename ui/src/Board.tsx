@@ -1,4 +1,6 @@
+import { rankNextMoves } from "./AI"
 import { GameState, Player, SquarePos } from "./state"
+import { getMoveHintColor } from "./utils"
 
 enum SquareValue {
     X = 'x',
@@ -9,9 +11,10 @@ enum SquareValue {
 type BoardProps = {
     state: GameState,
     onSquareClick: (id: SquarePos) => void,
+    showHints: boolean,
 }
 
-function Board({ state, onSquareClick }: BoardProps) {
+function Board({ state, onSquareClick, showHints }: BoardProps) {
     const colors = Array(9).fill('white')
     const highlight = Array(9).fill(false)
 
@@ -35,6 +38,14 @@ function Board({ state, onSquareClick }: BoardProps) {
         }
     })
 
+    const bgColors = Array(9).fill('#1a1a1a')
+    if (showHints && !state.winner) {
+        const moves = rankNextMoves(state)
+        moves.forEach((move) => {
+            bgColors[move.position] = getMoveHintColor(move.score)
+        })
+    }
+
     return <>
         <table>
             <tbody>
@@ -47,6 +58,7 @@ function Board({ state, onSquareClick }: BoardProps) {
                                     value={squareValues[i]}
                                     onClick={onSquareClick}
                                     color={colors[i]}
+                                    backgroundColor={bgColors[i]}
                                     highlight={highlight[i]}
                                 />
                             </td>
@@ -64,17 +76,21 @@ type SquareProps = {
     value: SquareValue,
     onClick: (id: SquarePos) => void,
     color: string,
+    backgroundColor: string,
     highlight: boolean,
 }
 
-function Square({ id, value, onClick, color, highlight } : SquareProps) {
+function Square({ id, value, onClick, color, backgroundColor, highlight } : SquareProps) {
     const classes = ['square']
     if (!value) {
         classes.push('empty')
     }
     const style = {
         color: color,
-        backgroundColor: highlight ? '#030303' : '#1a1a1a'
+        backgroundColor: highlight ? '#030303' : '#1a1a1a',
+        borderColor: highlight ? '#ffffff' : '#000000',
+        boxShadow: `inset ${backgroundColor} 0 0 20px 5px`,
+        transition: 'transform ease 0.5s, box-shadow ease 0.5s',
     }
     return <>
         <button

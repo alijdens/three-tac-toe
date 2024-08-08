@@ -10,7 +10,6 @@ type MoveScore = {
 
 
 export function rankNextMoves(state: GameState): MoveScore[] {
-    const code = encodeBoard(state)
     const availableStates = [0, 1, 2, 3, 4, 5, 6, 7, 8].filter((i) =>
         !isOccupied(i as SquarePos, state)
     )
@@ -31,7 +30,12 @@ export function rankNextMoves(state: GameState): MoveScore[] {
 }
 
 
-export function selectMove(xNext: boolean, moves: MoveScore[], random: boolean) {
+export function selectMove(
+    xNext: boolean,
+    moves: MoveScore[],
+    random: boolean,
+    aiIntelligence: number,
+) {
     const bestMove = findBest(xNext, moves)
     if (!random) {
         return bestMove

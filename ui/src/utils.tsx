@@ -1,3 +1,4 @@
+import { getGradient } from "./gradient"
 import { GameState, SquarePos, winner } from "./state"
 
 /**
@@ -67,4 +68,27 @@ export function decodeBoard(code: number): GameState {
     }
     state.winner = winner(state)
     return state
+}
+
+export function getMoveHintColor(score: number) {
+    if (score == 0) {
+        return '#9f7f2f'
+    }
+
+    let alpha = Math.floor(Math.abs(score) * 0xff).toString(16)
+    if (alpha.length == 1) {
+        alpha = '0' + alpha
+    }
+    if (score > 0) {
+        return '#50C878' + alpha
+    } else {
+        return '#FF2B1B' + alpha
+    }
+}
+
+export function toHexColor(n: number) {
+    const s = n.toString(16)
+    const missing = (6 - s.length)
+    const prefix = Array(missing).fill('0')
+    return '#' + prefix.join('') + s
 }
