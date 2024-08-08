@@ -6,10 +6,7 @@ type Settings = {
     // defines which player will be the AI or null to make human VS human
     aiPlayer: Player | null
 
-    // whether to make the AI randomize plays or be deterministic
-    aiRandomize: boolean
-
-    // 0 for purely random AI or 1 for optimal player
+    // 0 for purely random AI or 100 for optimal player
     aiIntelligence: number
     
     // seconds that the AI will wait to place its move
@@ -25,7 +22,6 @@ type Settings = {
 
 export const DEFAULT_SETTINGS: Settings = {
     aiPlayer: Player.O,
-    aiRandomize: true,
     aiIntelligence: 100,
     showHints: false,
     highlightMoveToDelete: true,
@@ -83,14 +79,6 @@ export function SettingsMenu({ values, setValues }: SettingsMenuProps) {
                     valueLabelDisplay="auto"
                 />
             } label="Ai response delay" />
-
-            <FormControlLabel control={
-                <Switch
-                    checked={values.aiRandomize}
-                    onChange={aiRandomizeHandleChange}
-                    aria-label="Randomize AI"
-                />
-            } label="Randomize AI" />
 
             <FormControlLabel control={
                 <Switch

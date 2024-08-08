@@ -27,7 +27,7 @@ function Game() {
         // wait the defined time before executing the action
         const id = setTimeout(() => {
             const nextMoves = rankNextMoves(state)
-            const aiMove = selectMove(state.xNext, nextMoves, settings.aiRandomize)
+            const aiMove = selectMove(state.xNext, nextMoves, settings.aiIntelligence)
 
             updateState({ type: 'set_play', position: aiMove.position })
         }, settings.aiResponseDelay * 1000)
@@ -44,7 +44,7 @@ function Game() {
         <h1>
             {title}
             <RestartGameButton updateState={updateState} />
-            {isAiTurn(state, settings.aiPlayer) ? <CircularProgress /> : <></>}
+            {isAiTurn(state, settings.aiPlayer) && !state.winner ? <CircularProgress /> : <></>}
         </h1>
         <Board
             state={state}
