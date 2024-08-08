@@ -14,6 +14,10 @@ type Settings = {
 
     // whether to show the best play hints
     showHints: boolean
+
+    // if false, then the move that will be deleted after the play is
+    // not shown in lighter color
+    highlightMoveToDelete: boolean
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -21,6 +25,7 @@ export const DEFAULT_SETTINGS: Settings = {
     aiRandomize: true,
     aiIntelligence: 100,
     showHints: false,
+    highlightMoveToDelete: true,
 }
 
 
@@ -46,6 +51,9 @@ export function SettingsMenu({ values, setValues }: SettingsMenuProps) {
     function showHintsHandleChange(event: React.ChangeEvent<HTMLInputElement>) {
         setValues({ ...values, showHints: event.target.checked })
     }
+    function highlightMoveToDeleteHandleChange(event: React.ChangeEvent<HTMLInputElement>) {
+        setValues({ ...values, highlightMoveToDelete: event.target.checked })
+    }
 
     return <>
         <FormGroup>
@@ -59,6 +67,7 @@ export function SettingsMenu({ values, setValues }: SettingsMenuProps) {
                     valueLabelDisplay="auto"
                 />
             } label="Ai intelligence" />
+
             <FormControlLabel control={
                 <Switch
                     checked={values.aiRandomize}
@@ -66,12 +75,21 @@ export function SettingsMenu({ values, setValues }: SettingsMenuProps) {
                     aria-label="Randomize AI"
                 />
             } label="Randomize AI" />
+
             <FormControlLabel control={
                 <Switch
                     checked={values.showHints}
                     onChange={showHintsHandleChange}
                 />
             } label="Show hints" />
+
+            <FormControlLabel control={
+                <Switch
+                    checked={values.highlightMoveToDelete}
+                    onChange={highlightMoveToDeleteHandleChange}
+                />
+            } label="Highlight move that will be deleted next" />
+
             <FormControlLabel control={
                 <Select
                     value={values.aiPlayer as string || "None"}

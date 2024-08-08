@@ -12,9 +12,10 @@ type BoardProps = {
     state: GameState,
     onSquareClick: (id: SquarePos) => void,
     showHints: boolean,
+    highlightMoveToDelete: boolean,
 }
 
-function Board({ state, onSquareClick, showHints }: BoardProps) {
+function Board({ state, onSquareClick, showHints, highlightMoveToDelete }: BoardProps) {
     const colors = Array(9).fill('white')
     const highlight = Array(9).fill(false)
 
@@ -24,7 +25,7 @@ function Board({ state, onSquareClick, showHints }: BoardProps) {
         colors[i] = '#1bcd80'
         if (state.winner == Player.X) {
             highlight[i] = true
-        } else if (index == 0 && state.XMoves.length == 3) {
+        } else if (highlightMoveToDelete && index == 0 && state.XMoves.length == 3) {
             colors[i] += '40'
         }
     })
@@ -33,7 +34,7 @@ function Board({ state, onSquareClick, showHints }: BoardProps) {
         colors[i] = '#d13a1b'
         if (state.winner == Player.O) {
             highlight[i] = true
-        } else if (index == 0 && state.OMoves.length == 3) {
+        } else if (highlightMoveToDelete && index == 0 && state.OMoves.length == 3) {
             colors[i] += '40'
         }
     })

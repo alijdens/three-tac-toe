@@ -48,6 +48,7 @@ function Game() {
             state={state}
             onSquareClick={onSquareClick}
             showHints={settings.showHints}
+            highlightMoveToDelete={settings.highlightMoveToDelete}
         />
     </>
 }
