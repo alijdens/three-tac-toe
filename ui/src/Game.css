@@ -14,6 +14,13 @@
     transition: border-color 0.25s;
 }
 
+@media (max-width: 767px) {
+    .square {
+        width: 100px;
+        height: 100px;
+    }
+}
+
 .empty.square:hover {
     border-color: #646cff;
 }
