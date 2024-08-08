@@ -23,7 +23,15 @@ export type SetPlayAction = {
     position: SquarePos,
 }
 
-export type Action = SetPlayAction
+export type ResetGameAction = {
+    type: 'reset',
+}
+
+export type Action = SetPlayAction | ResetGameAction
+
+export function initialState(): GameState {
+    return { xNext: true, XMoves: [], OMoves: [], winner: null }
+}
 
 export function useGameStateReducer(state: GameState) {
     return useReducer(gameStateReducer, state)
@@ -46,8 +54,13 @@ export function gameStateReducer(state: GameState, action: Action): GameState {
             newState['winner'] = winner(newState)
             return newState
         }
+
+        case 'reset': {
+            return initialState()
+        }
+
         default: {
-            throw Error('Unknown action: ' + action.type);
+            throw Error('Unknown action: ' + action);
         }
     }
 }

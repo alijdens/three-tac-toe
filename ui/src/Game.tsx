@@ -1,26 +1,21 @@
 import { useEffect, useState } from 'react'
-import { useGameStateReducer, SquarePos, isOccupied, Player } from './state'
+import { useGameStateReducer, SquarePos, isOccupied, initialState, Action } from './state'
 import './Game.css'
 import Board from './Board'
 import { selectMove, rankNextMoves, isAiTurn } from './AI'
 import { DEFAULT_SETTINGS, SettingsMenu } from './settings'
-import { CircularProgress } from '@mui/material'
+import { CircularProgress, IconButton, Tooltip } from '@mui/material'
+import RestartAltIcon from '@mui/icons-material/RestartAlt'
 
 
 function Game() {
-    const [state, updateState] = useGameStateReducer({ xNext: true, XMoves: [], OMoves: [], winner: null })
+    const [state, updateState] = useGameStateReducer(initialState())
     const [settings, setSettings] = useState(DEFAULT_SETTINGS)
 
     const onSquareClick = (id: SquarePos) => {
-        if (state.winner || isOccupied(id, state)) {
+        if (state.winner || isOccupied(id, state) || isAiTurn(state, settings.aiPlayer)) {
             return
         }
-
-        // check if it's the human's turn, otherwise ignore the action
-        if (isAiTurn(state, settings.aiPlayer)) {
-            return
-        }
-
         updateState({ type: 'set_play', position: id })
     }
 
@@ -46,13 +41,31 @@ function Game() {
     }
     return <>
         <SettingsMenu values={settings} setValues={setSettings} />
-        <h1>{title} {isAiTurn(state, settings.aiPlayer) ? <CircularProgress /> : <></>}</h1>
+        <h1>
+            {title}
+            <RestartGameButton updateState={updateState} />
+            {isAiTurn(state, settings.aiPlayer) ? <CircularProgress /> : <></>}
+        </h1>
         <Board
             state={state}
             onSquareClick={onSquareClick}
             showHints={settings.showHints}
             highlightMoveToDelete={settings.highlightMoveToDelete}
         />
+    </>
+}
+
+
+type RestartGameButtonProps = {
+    updateState: React.Dispatch<Action>,
+}
+function RestartGameButton({ updateState }: RestartGameButtonProps) {
+    return <>
+        <Tooltip title='Restart game'>
+            <IconButton color='primary' onClick={() => updateState({type: 'reset'})}>
+                <RestartAltIcon fontSize='large' />
+            </IconButton>
+        </Tooltip>
     </>
 }
 
