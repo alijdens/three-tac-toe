@@ -40,11 +40,11 @@ function Board({ state, onSquareClick, showHints, highlightMoveToDelete }: Board
         }
     })
 
-    const bgColors = Array(9).fill('#1a1a1a')
+    const shadows = Array(9).fill(null)
     if (showHints && !state.winner) {
         const moves = rankNextMoves(state)
         moves.forEach((move) => {
-            bgColors[move.position] = getMoveHintColor(move.score)
+            shadows[move.position] = getMoveHintColor(move.score)
         })
     }
 
@@ -78,7 +78,7 @@ function Board({ state, onSquareClick, showHints, highlightMoveToDelete }: Board
                             value={squareValues[i]}
                             onClick={onSquareClick}
                             color={colors[i]}
-                            backgroundColor={bgColors[i]}
+                            shadow={shadows[i]}
                             highlight={highlight[i]}
                         />
                     </Grid>
@@ -94,24 +94,26 @@ type SquareProps = {
     value: SquareValue,
     onClick: (id: SquarePos) => void,
     color: string,
-    backgroundColor: string,
+    shadow: string | null,
     highlight: boolean,
 }
 
-function Square({ id, value, onClick, color, backgroundColor, highlight } : SquareProps) {
+function Square({ id, value, onClick, color, shadow, highlight } : SquareProps) {
     const classes = ['square']
     if (!value) {
         classes.push('empty')
     }
     const style: any = {
         color: color,
-        backgroundColor: highlight ? '#030303' : '#1a1a1a',
-        boxShadow: `inset ${backgroundColor} 0 0 20px 5px`,
+        backgroundColor: highlight ? '#030303' : '#3a3a3a',
         transition: 'transform ease 0.5s, box-shadow ease 0.5s',
     }
     if (highlight) {
         style.borderColor = '#ffffff'
         style.borderWidth = 3
+    }
+    if (shadow) {
+        style.boxShadow = `inset ${shadow} 0 0 10px 10px`
     }
     return <>
         <button
