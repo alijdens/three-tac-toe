@@ -43,7 +43,7 @@ export function aiDecisionDistribution(scores: number[], intelligenceFactor: num
 
     // the temperature is very aggressive in distorting the probabilities
     // so we use a negative exponential to make the change less drastic
-    const temperature = Math.exp(-intelligenceFactor * 5) * 5
+    const temperature = Math.exp(-intelligenceFactor * 9) * 5
 
     // special case: pick the best scenarios only
     if (temperature < 0.001) {
