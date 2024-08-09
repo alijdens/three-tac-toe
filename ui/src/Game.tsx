@@ -4,9 +4,10 @@ import './Game.css'
 import Board from './Board'
 import { selectMove, rankNextMoves, isAiTurn } from './AI'
 import { DEFAULT_SETTINGS, SettingsMenu, Settings } from './settings'
-import { CircularProgress, IconButton, Tooltip } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, CircularProgress, Grid, IconButton, Tooltip, Typography } from '@mui/material'
 import RestartAltIcon from '@mui/icons-material/RestartAlt'
 import UndoIcon from '@mui/icons-material/Undo';
+import { ExpandMore } from '@mui/icons-material'
 
 
 function Game() {
@@ -41,13 +42,18 @@ function Game() {
         title = `"${state.winner}" has won!`
     }
     return <>
+        <Instructions />
         <SettingsMenu values={settings} setValues={setSettings} />
-        <h1>
-            {title}
-            <RestartGameButton updateState={updateState} />
-            <UndoButton state={state} updateState={updateState} settings={settings} />
-            {isAiTurn(state, settings.aiPlayer) && !state.winner ? <CircularProgress /> : <></>}
-        </h1>
+        <Grid container spacing={1} alignItems="center">
+            <Grid item sm={10} md={8}><h1 style={{textAlign: "left"}}>{title}</h1></Grid>
+            <Grid item xs={2} md={1}>{isAiTurn(state, settings.aiPlayer) && !state.winner ? <CircularProgress /> : <></>}</Grid>
+            <Grid container xs={12} md={3}>
+                <Grid container spacing={2} justifyContent="center" alignItems="center">
+                    <Grid item><RestartGameButton updateState={updateState} /></Grid>
+                    <Grid item><UndoButton state={state} updateState={updateState} settings={settings} /></Grid>
+                </Grid>
+            </Grid>
+        </Grid>
         <Board
             state={state}
             onSquareClick={onSquareClick}
@@ -86,6 +92,32 @@ function UndoButton({ state, updateState, settings }: UndoButtonProps) {
                 <UndoIcon fontSize='large' />
             </IconButton>
         </Tooltip>
+    </>
+}
+
+function Instructions() {
+    const [expanded, setExpanded] = useState(false)
+
+    return <>
+        <Accordion expanded={expanded} onChange={(_, isExpanded) => setExpanded(isExpanded)}>
+            <AccordionSummary
+                expandIcon={<ExpandMore />}
+                aria-controls="panel1bh-content"
+                id="panel1bh-header"
+            >
+                <Typography sx={{ width: '33%', flexShrink: 0 }}>Instructions</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+                <p>
+                    Like the <a href="https://en.wikipedia.org/wiki/Three_men%27s_morris">three men's morris game: </a>,
+                    each player has three pieces, but when moving pieces, players must first move their first pieces,
+                    then the second pieces, then the third pieces, then the first pieces, and so on.
+                </p>
+                <p>
+                    The piece that will be moved next will be colored darker (if the corresponding setting in ON).
+                </p>
+            </AccordionDetails>
+        </Accordion>
     </>
 }
 

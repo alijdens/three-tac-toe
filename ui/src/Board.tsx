@@ -1,3 +1,4 @@
+import { Box, Grid } from "@mui/material"
 import { rankNextMoves } from "./AI"
 import { GameState, Player, SquarePos } from "./state"
 import { getMoveHintColor } from "./utils"
@@ -48,26 +49,42 @@ function Board({ state, onSquareClick, showHints, highlightMoveToDelete }: Board
     }
 
     return <>
-        <table>
-            <tbody>
-                {[[0, 1, 2], [3, 4, 5], [6, 7, 8]].flatMap((row) =>
-                    <tr key={row[0]}>{
-                        row.map((i) =>
-                            <td key={i}>
-                                <Square
-                                    id={i as SquarePos}
-                                    value={squareValues[i]}
-                                    onClick={onSquareClick}
-                                    color={colors[i]}
-                                    backgroundColor={bgColors[i]}
-                                    highlight={highlight[i]}
-                                />
-                            </td>
-                        )
-                    }</tr>
-                )}
-            </tbody>
-        </table>
+        <Box
+            sx={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+            }}
+        >
+            <Box
+                sx={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(3, 1fr)',
+                    gridTemplateRows: 'repeat(3, 1fr)',
+                    aspectRatio: '1 / 1',
+                    width: '100%',
+                    gap: '10px'
+                }}
+            >
+                {squareValues.map((_, i) => (
+                    <Grid
+                        key={i}
+                        item
+                        sx={{ aspectRatio: '1 / 1', border: '0px' }}
+                    >
+                        <Square
+                            id={i as SquarePos}
+                            value={squareValues[i]}
+                            onClick={onSquareClick}
+                            color={colors[i]}
+                            backgroundColor={bgColors[i]}
+                            highlight={highlight[i]}
+                        />
+                    </Grid>
+                ))}
+            </Box>
+        </Box>
     </>
 }
 

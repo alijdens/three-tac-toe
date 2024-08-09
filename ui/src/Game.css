@@ -1,7 +1,6 @@
 .square {
-    width: 150px;
-    height: 150px;
-    margin: 3px;
+    width: 100%;
+    height: 100%;
     border-radius: 0px;
     border: 1px solid transparent;
     padding: 0;
@@ -12,13 +11,6 @@
     background-color: #1a1a1a;
     cursor: pointer;
     transition: border-color 0.25s;
-}
-
-@media (max-width: 767px) {
-    .square {
-        width: 120px;
-        height: 120px;
-    }
 }
 
 .empty.square:hover {
