@@ -64,6 +64,7 @@ export function decodeBoard(code: number): GameState {
         'OMoves': OMoves,
         'xNext': xNext,
         'winner': null,
+        'history': [],
     }
     state.winner = winner(state)
     return state

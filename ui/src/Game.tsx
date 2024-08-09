@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react'
-import { useGameStateReducer, SquarePos, isOccupied, initialState, Action } from './state'
+import { useGameStateReducer, SquarePos, isOccupied, Action, GameState } from './state'
 import './Game.css'
 import Board from './Board'
 import { selectMove, rankNextMoves, isAiTurn } from './AI'
-import { DEFAULT_SETTINGS, SettingsMenu } from './settings'
+import { DEFAULT_SETTINGS, SettingsMenu, Settings } from './settings'
 import { CircularProgress, IconButton, Tooltip } from '@mui/material'
 import RestartAltIcon from '@mui/icons-material/RestartAlt'
+import UndoIcon from '@mui/icons-material/Undo';
 
 
 function Game() {
-    const [state, updateState] = useGameStateReducer(initialState())
+    const [state, updateState] = useGameStateReducer()
     const [settings, setSettings] = useState(DEFAULT_SETTINGS)
 
     const onSquareClick = (id: SquarePos) => {
@@ -44,6 +45,7 @@ function Game() {
         <h1>
             {title}
             <RestartGameButton updateState={updateState} />
+            <UndoButton state={state} updateState={updateState} settings={settings} />
             {isAiTurn(state, settings.aiPlayer) && !state.winner ? <CircularProgress /> : <></>}
         </h1>
         <Board
@@ -64,6 +66,24 @@ function RestartGameButton({ updateState }: RestartGameButtonProps) {
         <Tooltip title='Restart game'>
             <IconButton color='primary' onClick={() => updateState({type: 'reset'})}>
                 <RestartAltIcon fontSize='large' />
+            </IconButton>
+        </Tooltip>
+    </>
+}
+
+type UndoButtonProps = {
+    state: GameState,
+    updateState: React.Dispatch<Action>,
+    settings: Settings,
+}
+function UndoButton({ state, updateState, settings }: UndoButtonProps) {
+    // if we are playing against the AI we need to skip the AI's last move
+    const offset = settings.aiPlayer ? 2 : 1
+    const canUndo = !isAiTurn(state, settings.aiPlayer) && state.history.length >= offset
+    return <>
+        <Tooltip title='Undo last move'>
+            <IconButton disabled={!canUndo} color='primary' onClick={() => updateState({type: 'undo', 'offset': offset})}>
+                <UndoIcon fontSize='large' />
             </IconButton>
         </Tooltip>
     </>

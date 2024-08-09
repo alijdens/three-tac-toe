@@ -1,4 +1,5 @@
 import { useReducer } from 'react';
+import { decodeBoard, encodeBoard } from './utils';
 
 export enum Player {
     X = 'X',
@@ -16,6 +17,9 @@ export type GameState = {
     OMoves: Array<SquarePos>
 
     winner: Player | null
+
+    // stack of (encoded) past game states
+    history: number[]
 }
 
 export type SetPlayAction = {
@@ -23,18 +27,23 @@ export type SetPlayAction = {
     position: SquarePos,
 }
 
+export type UndoGameAction = {
+    type: 'undo',
+    offset: number,
+}
+
 export type ResetGameAction = {
     type: 'reset',
 }
 
-export type Action = SetPlayAction | ResetGameAction
+export type Action = SetPlayAction | ResetGameAction | UndoGameAction
 
 export function initialState(): GameState {
-    return { xNext: true, XMoves: [], OMoves: [], winner: null }
+    return { xNext: true, XMoves: [], OMoves: [], winner: null, history: [] }
 }
 
-export function useGameStateReducer(state: GameState) {
-    return useReducer(gameStateReducer, state)
+export function useGameStateReducer() {
+    return useReducer(gameStateReducer, null, initialState)
 }
 
 export function gameStateReducer(state: GameState, action: Action): GameState {
@@ -45,6 +54,7 @@ export function gameStateReducer(state: GameState, action: Action): GameState {
                 'XMoves': [...state.XMoves],
                 'OMoves': [...state.OMoves],
                 'winner': null,
+                'history': [...state.history],
             }
             const moves = state.xNext ? newState.XMoves : newState.OMoves
             moves.push(action.position)
@@ -52,7 +62,23 @@ export function gameStateReducer(state: GameState, action: Action): GameState {
                 moves.shift()
             }
             newState['winner'] = winner(newState)
+            // store the old state in the history
+            newState.history.push(encodeBoard(state))
             return newState
+        }
+
+        case 'undo': {
+            if (state.history.length < action.offset) {
+                throw new Error("Now enough moves to rollback")
+            }
+            if (action.offset <= 0) {
+                throw new Error('Offset must be positive')
+            }
+            const end = state.history.length - action.offset + 1
+            const history = state.history.slice(0, end)
+            const oldState = decodeBoard(history.pop() as number)
+            oldState.history = history
+            return oldState
         }
 
         case 'reset': {

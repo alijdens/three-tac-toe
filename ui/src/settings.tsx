@@ -4,7 +4,7 @@ import { Accordion, AccordionDetails, AccordionSummary, FormControl, FormControl
 import { useState } from "react"
 
 
-type Settings = {
+export type Settings = {
     // defines which player will be the AI or null to make human VS human
     aiPlayer: Player | null
 
