@@ -49,7 +49,7 @@ function Game() {
             <Grid item xs={2} md={1}>{isAiTurn(state, settings.aiPlayer) && !state.winner ? <CircularProgress /> : <></>}</Grid>
             <Grid container xs={12} md={3}>
                 <Grid container spacing={2} justifyContent="center" alignItems="center">
-                    <Grid item><RestartGameButton updateState={updateState} /></Grid>
+                    <Grid item><RestartGameButton state={state} updateState={updateState} /></Grid>
                     <Grid item><UndoButton state={state} updateState={updateState} settings={settings} /></Grid>
                 </Grid>
             </Grid>
@@ -65,12 +65,14 @@ function Game() {
 
 
 type RestartGameButtonProps = {
+    state: GameState,
     updateState: React.Dispatch<Action>,
 }
-function RestartGameButton({ updateState }: RestartGameButtonProps) {
+function RestartGameButton({ state, updateState }: RestartGameButtonProps) {
+    const gameStarted = state.history.length > 0
     return <>
         <Tooltip title='Restart game'>
-            <IconButton color='primary' onClick={() => updateState({type: 'reset'})}>
+            <IconButton disabled={!gameStarted} color='primary' onClick={() => updateState({type: 'reset'})}>
                 <RestartAltIcon fontSize='large' />
             </IconButton>
         </Tooltip>
