@@ -111,7 +111,7 @@ function Instructions() {
             </AccordionSummary>
             <AccordionDetails>
                 <p>
-                    Like the <a href="https://en.wikipedia.org/wiki/Three_men%27s_morris">three men's morris game: </a>,
+                    Like the <a href="https://en.wikipedia.org/wiki/Three_men%27s_morris">three men's morris game: </a>
                     each player has three pieces, but when moving pieces, players must first move their first pieces,
                     then the second pieces, then the third pieces, then the first pieces, and so on.
                 </p>
