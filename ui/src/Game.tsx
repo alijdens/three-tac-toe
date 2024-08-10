@@ -111,12 +111,20 @@ function Instructions() {
             </AccordionSummary>
             <AccordionDetails>
                 <p>
-                    Like the <a href="https://en.wikipedia.org/wiki/Three_men%27s_morris">three men's morris game: </a>
+                    Like the <a href="https://en.wikipedia.org/wiki/Three_men%27s_morris">three men's morris game</a> but
+                    with a slight variation: 
                     each player has three pieces, but when moving pieces, players must first move their first pieces,
                     then the second pieces, then the third pieces, then the first pieces, and so on.
                 </p>
                 <p>
                     The piece that will be moved next will be colored darker (if the corresponding setting in ON).
+                </p>
+                <p>
+                    Some considerations:
+                    <ul>
+                    <li>The player that starts (X) can always win (provided they make the appropriate moves)</li>
+                    <li>The game can enter a cycle where no one ever wins</li>
+                    </ul>
                 </p>
             </AccordionDetails>
         </Accordion>
