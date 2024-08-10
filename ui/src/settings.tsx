@@ -27,7 +27,7 @@ export const DEFAULT_SETTINGS: Settings = {
     aiIntelligence: 100,
     showHints: false,
     highlightMoveToDelete: true,
-    aiResponseDelay: 2,
+    aiResponseDelay: 1,
 }
 
 
@@ -103,8 +103,9 @@ export function SettingsMenuContent({ values, setValues }: SettingsMenuProps) {
                 <Slider
                     value={values.aiResponseDelay}
                     onChange={aiResponseDelayHandleChange}
+                    step={0.5}
                     min={0}
-                    max={10}
+                    max={5}
                     valueLabelDisplay="auto"
                     style={style}
                     disabled={aiDisabled}
