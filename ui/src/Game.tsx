@@ -126,6 +126,7 @@ function Instructions() {
                     <li>The game can enter a cycle where no one ever wins</li>
                     </ul>
                 </p>
+                <p>Source code available <a target="_blank" href="https://github.com/alijdens/three-tac-toe">here</a>.</p>
             </AccordionDetails>
         </Accordion>
     </>
