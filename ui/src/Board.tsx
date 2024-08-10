@@ -2,10 +2,12 @@ import { Box, Grid } from "@mui/material"
 import { rankNextMoves } from "./AI"
 import { GameState, Player, SquarePos } from "./state"
 import { getMoveHintColor } from "./utils"
+import './Board.css'
+
 
 enum SquareValue {
-    X = 'x',
-    O = 'o',
+    X = 'X',
+    O = 'O',
     Empty = '',
 }
 
@@ -17,28 +19,26 @@ type BoardProps = {
 }
 
 function Board({ state, onSquareClick, showHints, highlightMoveToDelete }: BoardProps) {
-    const colors = Array(9).fill('white')
+    const opacities = Array(9).fill(0)
     const highlight = Array(9).fill(false)
 
     const squareValues = Array(9).fill(null)
-    state.XMoves.forEach((i, index) => {
-        squareValues[i] = 'x'
-        colors[i] = '#1bcd80'
-        if (state.winner == Player.X) {
-            highlight[i] = true
-        } else if (highlightMoveToDelete && index == 0 && state.XMoves.length == 3) {
-            colors[i] += '40'
-        }
-    })
-    state.OMoves.forEach((i, index) => {
-        squareValues[i] = 'o'
-        colors[i] = '#d13a1b'
-        if (state.winner == Player.O) {
-            highlight[i] = true
-        } else if (highlightMoveToDelete && index == 0 && state.OMoves.length == 3) {
-            colors[i] += '40'
-        }
-    })
+
+    function updateSquares(player: Player, moves: SquarePos[]) {
+        const squareValue = (player == Player.X) ? SquareValue.X : SquareValue.O
+        moves.forEach((i, index) => {
+            squareValues[i] = squareValue
+            opacities[i] = 1
+            if (state.winner == player) {
+                highlight[i] = true
+            } else if (highlightMoveToDelete && index == 0 && moves.length == 3) {
+                opacities[i] = 0.4
+            }
+        })
+    }
+
+    updateSquares(Player.X, state.XMoves)
+    updateSquares(Player.O, state.OMoves)
 
     const shadows = Array(9).fill(null)
     if (showHints && !state.winner) {
@@ -77,7 +77,7 @@ function Board({ state, onSquareClick, showHints, highlightMoveToDelete }: Board
                             id={i as SquarePos}
                             value={squareValues[i]}
                             onClick={onSquareClick}
-                            color={colors[i]}
+                            opacity={opacities[i]}
                             shadow={shadows[i]}
                             highlight={highlight[i]}
                         />
@@ -92,19 +92,18 @@ function Board({ state, onSquareClick, showHints, highlightMoveToDelete }: Board
 type SquareProps = {
     id: SquarePos,
     value: SquareValue,
+    opacity: number,
     onClick: (id: SquarePos) => void,
-    color: string,
     shadow: string | null,
     highlight: boolean,
 }
 
-function Square({ id, value, onClick, color, shadow, highlight } : SquareProps) {
+function Square({ id, value, opacity, onClick, shadow, highlight } : SquareProps) {
     const classes = ['square']
     if (!value) {
         classes.push('empty')
     }
     const style: any = {
-        color: color,
         backgroundColor: highlight ? '#030303' : '#3a3a3a',
         transition: 'transform ease 0.5s, box-shadow ease 0.5s',
     }
@@ -115,13 +114,18 @@ function Square({ id, value, onClick, color, shadow, highlight } : SquareProps) 
     if (shadow) {
         style.boxShadow = `inset ${shadow} 0 0 10px 10px`
     }
+    const contentStyle = {
+        color: (value == SquareValue.X) ? '#1bcd80' : '#d13a1b',
+        opacity: opacity,
+        transition: 'opacity ease 0.7s',
+    }
     return <>
         <button
             style={style}
             className={classes.join(' ')}
             onClick={() => onClick(id)}
         >
-            { value }
+            <span style={contentStyle}>{value}</span>
         </button>
     </>
 }
