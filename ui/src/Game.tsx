@@ -87,7 +87,7 @@ type UndoButtonProps = {
 function UndoButton({ state, updateState, settings }: UndoButtonProps) {
     // if we are playing against the AI we need to skip the AI's last move
     const offset = settings.aiPlayer ? 2 : 1
-    const canUndo = !isAiTurn(state, settings.aiPlayer) && state.history.length >= offset
+    const canUndo = state.winner || (!isAiTurn(state, settings.aiPlayer) && (state.history.length >= offset))
     return <>
         <Tooltip title='Undo last move'>
             <IconButton disabled={!canUndo} color='primary' onClick={() => updateState({type: 'undo', 'offset': offset})}>
