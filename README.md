@@ -11,7 +11,7 @@ To generate the AI execute (requires Python 3.9+):
 python ./ai
 ```
 
-The explanation about how it works can be found [here](http://localhost:4000/2024-08-11-three-men-morris-fifo/).
+The explanation about how it works can be found [here](https://alijdens.github.io/2024-08-11-three-men-morris-fifo/).
 
 To test the UI locally refer to [`ui`](./ui).
 
