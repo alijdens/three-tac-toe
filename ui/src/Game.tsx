@@ -127,6 +127,7 @@ function Instructions() {
                     </ul>
                 </p>
                 <p>Source code available <a target="_blank" href="https://github.com/alijdens/three-tac-toe">here</a>.</p>
+                <p><a target="_blank" href="https://alijdens.github.io/2024-08-11-three-men-morris-fifo/">AI algorithm explained</a>.</p>
             </AccordionDetails>
         </Accordion>
     </>
