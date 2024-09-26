@@ -126,8 +126,13 @@ function Instructions() {
                     <li>The game can enter a cycle where no one ever wins</li>
                     </ul>
                 </p>
+                <p>
+                    Turn on the hints to get insights on how the outcome of the game will be based on the slot choice.
+                    Green values show moves that make the <b>X</b> win. Red ones indicate that the <b>O</b> wins and
+                    yellow ones indicate a draw. Darker colors indicate a faster win/lose.
+                </p>
                 <p>Source code available <a target="_blank" href="https://github.com/alijdens/three-tac-toe">here</a>.</p>
-                <p><a target="_blank" href="https://alijdens.github.io/2024-08-11-three-men-morris-fifo/">AI algorithm explained</a>.</p>
+                <p>AI algorithm explained <a target="_blank" href="https://alijdens.github.io/2024-08-11-three-men-morris-fifo/">here</a>.</p>
             </AccordionDetails>
         </Accordion>
     </>
